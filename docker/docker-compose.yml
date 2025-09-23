@@ -1,10 +1,24 @@
-version: 3.8
+version: "3.8"
 services:
   node1:
-    build: ..
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
     ports:
       - "8080:8080"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
   node2:
-    build: ..
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
     ports:
       - "8081:8080"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3

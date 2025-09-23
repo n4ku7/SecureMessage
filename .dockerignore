@@ -1,0 +1,35 @@
+# Python caches
+__pycache__/
+*.pyc
+*.pyo
+
+# Virtual envs
+.venv/
+venv/
+
+# Git
+.git/
+.gitignore
+
+# CI configs (not needed in image)
+.github/
+
+# OS / misc
+.DS_Store
+*.log
+.env
+
+# Node
+node_modules/
+
+# Local secrets
+**/*.pem
+**/*.key
+**/*.crt
+**/*.pub
+**/*.secret
+**/*.local
+
+# Development-only directories
+wireguard/
+systemd/
