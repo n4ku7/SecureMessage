@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Secure Messaging</title>
+  <script src="https://unpkg.com/libsodium-wrappers/dist/modules/libsodium-wrappers.js"></script>
+  <script src="app.js"></script>
+</head>
+<body>
+  <h1>Secure Messaging</h1>
+  <p>Your Public Key: <span id="myPublicKey"></span></p>
+  <input id="recipientKeyInput" placeholder="Recipient public key" size="80">
+  <button onclick="setRecipient()">Set Recipient</button>
+  <br><br>
+  <textarea id="messageInput" placeholder="Enter message" rows="4" cols="50"></textarea>
+  <br>
+  <button onclick="sendMessage()">Send</button>
+  <h2>Inbox</h2>
+  <div id="inbox"></div>
+</body>
+</html>

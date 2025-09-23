@@ -1,0 +1,12 @@
+[Unit]
+Description=Secure Messaging Server
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/python3 /home/ubuntu/secure-messaging/server/app.py
+WorkingDirectory=/home/ubuntu/secure-messaging
+Restart=always
+User=ubuntu
+
+[Install]
+WantedBy=multi-user.target
