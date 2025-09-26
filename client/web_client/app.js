@@ -1,9 +1,24 @@
 let myKeyPair = null;
 let recipientPublicKey = null;
 
+// Ensure sodium is loaded before running init
+function sodiumReadyInit() {
+  if (window.sodium && window.sodium.ready) {
+    window.sodium.ready.then(init);
+  } else {
+    // Wait for sodium to be defined
+    const sodiumInterval = setInterval(() => {
+      if (window.sodium && window.sodium.ready) {
+        clearInterval(sodiumInterval);
+        window.sodium.ready.then(init);
+      }
+    }, 50);
+  }
+}
+
 async function init() {
   await window.sodium.ready;
-  
+
   let publicKeyB64 = "";
   if (!localStorage.getItem("my_private")) {
     const kp = window.sodium.crypto_box_keypair();
@@ -18,13 +33,13 @@ async function init() {
     };
     publicKeyB64 = localStorage.getItem("my_public");
   }
-  
+
   updatePublicKeyTextBox(publicKeyB64);
 }
 
 function updatePublicKeyTextBox(publicKey) {
   if (!publicKey) return;
-  
+
   const textBox = document.getElementById("myPublicKeyTextBox");
   if (textBox) {
     textBox.value = publicKey;
@@ -96,13 +111,8 @@ async function fetchInbox() {
 
 setInterval(fetchInbox, 5000);
 
-// Better initialization sequence
-if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", init);
-} else {
-  // DOM already loaded
-  init();
-}
+// Remove previous init logic and use sodiumReadyInit
+sodiumReadyInit();
 
 // Fallback to ensure the public key is always displayed
 window.addEventListener('load', function() {
