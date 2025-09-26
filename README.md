@@ -10,7 +10,7 @@ A self-hosted, end-to-end encrypted messaging system with:
 
 ## Quick Start
 ```bash
-git clone https://github.com/youruser/secure-messaging.git
+git clone https://github.com/n4ku7/SecureMessage.git
 cd secure-messaging
 python3 -m venv venv
 source venv/bin/activate
