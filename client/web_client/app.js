@@ -111,8 +111,28 @@ async function fetchInbox() {
 
 setInterval(fetchInbox, 5000);
 
-// Remove previous init logic and use sodiumReadyInit
-sodiumReadyInit();
+// Wait for DOM and Sodium, then initialize
+function startWhenReady() {
+  if (
+    document.readyState === "complete" ||
+    document.readyState === "interactive"
+  ) {
+    if (window.sodium && window.sodium.ready) {
+      window.sodium.ready.then(init);
+    } else {
+      const sodiumInterval = setInterval(() => {
+        if (window.sodium && window.sodium.ready) {
+          clearInterval(sodiumInterval);
+          window.sodium.ready.then(init);
+        }
+      }, 50);
+    }
+  } else {
+    document.addEventListener("DOMContentLoaded", startWhenReady);
+  }
+}
+
+startWhenReady();
 
 // Fallback to ensure the public key is always displayed
 window.addEventListener('load', function() {
