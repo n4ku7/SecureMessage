@@ -7,7 +7,9 @@
 </head>
 <body>
   <h1>Secure Messaging</h1>
-  <p>Your Public Key: <span id="myPublicKey"></span></p>
+  <p>Your Public Key:</p>
+  <input id="myPublicKeyTextBox" type="text" placeholder="Your public key will appear here" size="80" readonly>
+  <br><br>
   <input id="recipientKeyInput" placeholder="Recipient public key" size="80">
   <button onclick="setRecipient()">Set Recipient</button>
   <br><br>

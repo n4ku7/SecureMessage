@@ -3,19 +3,45 @@ let recipientPublicKey = null;
 
 async function init() {
   await window.sodium.ready;
+  
+  let publicKeyB64 = "";
   if (!localStorage.getItem("my_private")) {
     const kp = window.sodium.crypto_box_keypair();
     myKeyPair = kp;
+    publicKeyB64 = window.sodium.to_base64(kp.publicKey);
     localStorage.setItem("my_private", window.sodium.to_base64(kp.privateKey));
-    localStorage.setItem("my_public", window.sodium.to_base64(kp.publicKey));
+    localStorage.setItem("my_public", publicKeyB64);
   } else {
     myKeyPair = {
       privateKey: window.sodium.from_base64(localStorage.getItem("my_private")),
       publicKey: window.sodium.from_base64(localStorage.getItem("my_public"))
     };
+    publicKeyB64 = localStorage.getItem("my_public");
   }
-  document.getElementById("myPublicKey").textContent = localStorage.getItem("my_public") || "";
+  
+  updatePublicKeyTextBox(publicKeyB64);
 }
+
+function updatePublicKeyTextBox(publicKey) {
+  if (!publicKey) return;
+  
+  const textBox = document.getElementById("myPublicKeyTextBox");
+  if (textBox) {
+    textBox.value = publicKey;
+    textBox.setAttribute("readonly", "readonly"); // Ensure it stays readonly
+  }
+}
+
+// Global function to ensure public key is always displayed
+function ensurePublicKeyDisplay() {
+  const publicKey = localStorage.getItem("my_public");
+  if (publicKey) {
+    updatePublicKeyTextBox(publicKey);
+  }
+}
+
+// Call this at multiple intervals to ensure it shows
+setInterval(ensurePublicKeyDisplay, 1000); // Check every second
 
 function setRecipient() {
   const key = document.getElementById("recipientKeyInput").value.trim();
@@ -69,6 +95,34 @@ async function fetchInbox() {
 }
 
 setInterval(fetchInbox, 5000);
-window.onload = init;
+
+// Better initialization sequence
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", init);
+} else {
+  // DOM already loaded
+  init();
+}
+
+// Fallback to ensure the public key is always displayed
+window.addEventListener('load', function() {
+  setTimeout(() => {
+    const storedKey = localStorage.getItem("my_public");
+    if (storedKey) {
+      updatePublicKeyTextBox(storedKey);
+    }
+  }, 200);
+});
+
+// Additional retry mechanism for when DOM might not be fully ready
+document.addEventListener('DOMContentLoaded', function() {
+  setTimeout(() => {
+    const storedKey = localStorage.getItem("my_public");
+    if (storedKey) {
+      updatePublicKeyTextBox(storedKey);
+    }
+  }, 100);
+});
+
 window.setRecipient = setRecipient;
 window.sendMessage = sendMessage;
